@@ -110,12 +110,13 @@ class Router {
             'path' => $path, 
             'payload' => $payload,
         ];
-        print_r($this->__routes);
+        
+        // print_r($this->__routes);
     }
 }
 
 $router = new Router();
-$router->add('GET /hello/:name?/:age?', [
+$router->add('GET hello/:name?/:age?', [
         'name' => [
             function ($val) {
                 return strlen($val) < 5;

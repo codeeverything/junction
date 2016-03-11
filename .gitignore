@@ -2,3 +2,5 @@
 .git
 php.ini
 php_errors.log
+
+/vendor/

@@ -1,0 +1,10 @@
+{
+    "name": "root/workspace",
+    "authors": [
+        {
+            "name": "inkymike",
+            "email": "mike@codeeverything.com"
+        }
+    ],
+    "require": {}
+}
