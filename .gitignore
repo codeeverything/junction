@@ -2,5 +2,6 @@
 .git
 php.ini
 php_errors.log
+test-junction.php
 
 /vendor/

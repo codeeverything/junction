@@ -1,5 +1,9 @@
 <?php
 
+namespace Junction;
+
+use Exception;
+
 class Router {
     
     private $__routes = [];
@@ -8,14 +12,11 @@ class Router {
         $path = $this->__getPath($_SERVER['PATH_INFO']);
         $method = $_SERVER['REQUEST_METHOD'];
         
-        // print_r($path);
-        
         $vars = [];
         
         foreach ($this->__routes[$method] as $route) {
             $matched = 0;
             foreach ($route['path'] as $index => $part) {
-                // print_r($part);
                 if ($part['type'] === 'segment' && $path[$index] == $part['value']) {
                     // echo "Good, part $index matches";
                     $matched++;
@@ -46,7 +47,6 @@ class Router {
             // did we match all the elements?
             if ($matched == count($route['path'])) {
                 // echo "route matched";
-                // print_r($vars);
                 return call_user_func_array($route['payload'], $vars);
             }
         }
@@ -74,6 +74,7 @@ class Router {
         
         $path = explode(' ', $path);
         $method = $path[0];
+        $name = isset($path[3]) ? $path[3] : null;
         $path = $path[1];
         
         $path = $this->__getPath($path);
@@ -100,42 +101,22 @@ class Router {
             }
         }
         
-        // print_r($path);
-        
         if (!is_callable($payload)) {
             throw new Exception('Route payload must be a function.');
         }
         
-        $this->__routes[$method][] = [
-            'path' => $path, 
-            'payload' => $payload,
-        ];
+        if ($name === null) {
+            $this->__routes[$method][] = [
+                'path' => $path, 
+                'payload' => $payload,
+            ];
+        }
         
-        // print_r($this->__routes);
+        if ($name !== null) {
+            $this->__routes[$method][] = [
+                'path' => $path, 
+                'payload' => $payload,
+            ];
+        }
     }
 }
-
-$router = new Router();
-$router->add('GET hello/:name?/:age?', [
-        'name' => [
-            function ($val) {
-                return strlen($val) < 5;
-            },
-        ],
-    ], function ($name, $age) {
-    $name = isset($name) ? $name : 'World';
-    $age = isset($age) ? $age : 'old';
-    echo "Hello, $name. You're $age";
-    
-    return [
-        'foo' => 'bar',
-    ];
-});
-
-$router->add('POST /hello/:name?/:age?', function ($name, $age) {
-    $name = isset($name) ? $name : 'World';
-    $age = isset($age) ? $age : 'old';
-    echo "Hello, $name. You're $age - so get bent";
-});
-
-var_dump($router->handleRequest());
