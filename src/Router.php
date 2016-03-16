@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * A simple router for your PHP applications. Inspired by Dan Van Kooten's Altorouter 
+ * 
+ * https://github.com/dannyvankooten/AltoRouter
+ * 
+ * @version 0.1
+ * @author Mike Timms
+ */
+ 
 namespace Junction;
 
 use Exception;
@@ -8,7 +17,7 @@ class Router {
     
     private $__routes = [];
     
-    public function handleRequest() {
+    public function handleRequest($executePayload = true) {
         $path = $this->__getPath($_SERVER['PATH_INFO']);
         $method = $_SERVER['REQUEST_METHOD'];
         
@@ -46,8 +55,16 @@ class Router {
             
             // did we match all the elements?
             if ($matched == count($route['path'])) {
-                // echo "route matched";
-                return call_user_func_array($route['payload'], $vars);
+                // execute the payload, passing in the $vars array as arguments
+                if ($executePayload) {
+                    return call_user_func_array($route['payload'], $vars);
+                }
+                
+                // return the payload and any values in $vars for the user to do with as they please
+                return [
+                    'payload' => $route['payload'],
+                    'vars' => $vars,
+                ];
             }
         }
         
