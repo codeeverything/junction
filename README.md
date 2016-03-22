@@ -4,11 +4,21 @@
 Junction is a simple PHP router. Right now it's created as a personal project out of interest, but I plan to use it as the default router in my micro-RESTful PHP framework [Planck](https://www.github.com/codeeverything/planck-mvc).
 
 
-## Open Source
+## Open source
 
 Comments and suggestions welcome. This open source, so get forking and PRing if you want! :)
 
-## Example Usage
+## Tests
+
+Junction comes with a ~~complete~~ set of tests. 
+
+You can run them with PHPUnit quite simply from your shell:
+
+```
+vendor/bin/phpunit
+```
+
+## Example usage
 
 ### Simple route
 
