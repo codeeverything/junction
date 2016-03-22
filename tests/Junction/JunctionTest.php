@@ -16,11 +16,11 @@ class JunctionTest extends \PHPUnit_Framework_TestCase {
 
     public function testBadSimpleRoute() {
         $this->setExpectedException('Exception');
-        $this->router->add('GET hello', 'not callable');
+        $this->router->add('GET /hello', 'not callable');
     }
     
     public function testSimpleRoute() {
-        $this->router->add('GET hello', function () {
+        $this->router->add('GET /hello', function () {
             return 'Hello, world';
         });
         
@@ -31,7 +31,7 @@ class JunctionTest extends \PHPUnit_Framework_TestCase {
     }
     
     public function testSimpleRouteWithParam() {
-        $this->router->add('GET hello/:name', function ($name) {
+        $this->router->add('GET /hello/:name', function ($name) {
             return 'Hello, ' . $name;
         });
         
@@ -49,7 +49,7 @@ class JunctionTest extends \PHPUnit_Framework_TestCase {
     }
     
     public function testSimpleRouteWithOptionalParam() {
-        $this->router->add('GET hello/:name?', function ($name) {
+        $this->router->add('GET /hello/:name?', function ($name) {
             $name = isset($name) ? $name : 'world';
             return 'Hello, ' . $name;
         });
@@ -68,7 +68,7 @@ class JunctionTest extends \PHPUnit_Framework_TestCase {
     }
     
     public function testSimpleRouteWithValidatedParam() {
-        $this->router->add('GET hello/:name', [
+        $this->router->add('GET /hello/:name', [
             'name' => [
                 function ($value) {
                     return strlen($value) < 5;

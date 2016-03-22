@@ -117,6 +117,7 @@ class Router {
             throw new Exception('Router::add validation must be an array');
         }
         
+        $path = trim($path, '/');
         $path = explode(' ', $path);
         $method = $path[0];
         $name = isset($path[3]) ? $path[3] : null;
