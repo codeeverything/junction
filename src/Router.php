@@ -15,8 +15,22 @@ use Exception;
 
 class Router {
     
+    /**
+     * Contains all the registered routes
+     * 
+     * @var array
+     */ 
     private $__routes = [];
     
+    /**
+     * Handle the request made to the "front controller".
+     * Take apart the path requested and try to find a matching
+     * route.
+     * 
+     * @param bool $executePayload - Whether to execute the payload or return it. Default is to execute
+     * @throws Exception
+     * @return mixed
+     */ 
     public function handleRequest($executePayload = true) {
         $path = $this->__getPath($_SERVER['PATH_INFO']);
         $method = $_SERVER['REQUEST_METHOD'];
@@ -26,17 +40,17 @@ class Router {
         foreach ($this->__routes[$method] as $route) {
             $matched = 0;
             foreach ($route['path'] as $index => $part) {
+                // handle a path segment
                 if ($part['type'] === 'segment' && $path[$index] == $part['value']) {
-                    // echo "Good, part $index matches";
                     $matched++;
                     continue;
                 }
                 
+                // handle a path variable
                 if ($part['type'] === 'var' && (isset($path[$index]) || $part['optional'] == true)) {
-                    // echo "Good, we found a value for var {$part['varName']} at path index $index: {$path[$index]}";
-                    
                     // validate the variable
                     $valid = true;
+                    
                     foreach ($part['validation'] as $validator) {
                         if (is_callable($validator[0])) {
                             $valid = $valid && call_user_func_array($validator[0], [$path[$index]]);
@@ -44,7 +58,7 @@ class Router {
                     }
                     
                     if ($valid) {
-                        $vars[$part['varName']] = $path[$index];
+                        $vars[$part['varName']] = isset($path[$index]) ? $path[$index] : null;
                         $matched++;
                         continue;
                     } else {
@@ -69,16 +83,30 @@ class Router {
         }
         
         // no matching routes
-        http_response_code(404);
-        throw new Exception('Not found');
+        throw new Exception('No matching route found');
     }
     
+    /**
+     * Given a path break it up and return the array
+     * 
+     * @param string $path - The path to work on
+     * @return array
+     */
     private function __getPath($path) {
         $path = trim($path, '/');
         $path = explode('/', $path);
         return $path;
     }
     
+    /**
+     * Register a route, along with (optional) validation and the payload to run/return
+     * 
+     * @param string $path - A string describing the path to match of the format "METHOD path/:var/:optional_var? AS NamedRoute"
+     * @param mixed $validation - Either an array with keys matching route variables and entries as functions to validate the value, OR a callable to be used as $payload
+     * @param callable $payload - A callable that will be run or returned if the route is matched
+     * @throws Exception
+     * @return mixed
+     */
     public function add($path, $validation, $payload = null) {
         if (is_callable($validation)) {
             $payload = $validation;
@@ -130,7 +158,7 @@ class Router {
         }
         
         if ($name !== null) {
-            $this->__routes[$method][] = [
+            $this->__routes[$method][$name] = [
                 'path' => $path, 
                 'payload' => $payload,
             ];
