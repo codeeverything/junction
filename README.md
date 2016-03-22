@@ -1,7 +1,7 @@
 # Junction
 ### A simple PHP router
 
-Junction is a simple PHP router. Right now it's created as a personal project out of interest, but I plan to use it as the default router in my micro-RESTful PHP framework [Planck](https://www.github.com/codeeverything/plamck-mvc).
+Junction is a simple PHP router. Right now it's created as a personal project out of interest, but I plan to use it as the default router in my micro-RESTful PHP framework [Planck](https://www.github.com/codeeverything/planck-mvc).
 
 
 ## Open Source
