@@ -32,7 +32,7 @@ class Router {
      * @return mixed
      */ 
     public function handleRequest($executePayload = true) {
-        $path = $this->__getPath($_SERVER['PATH_INFO']);
+        $path = $this->__getPath($_SERVER['REQUEST_URI']);
         $method = $_SERVER['REQUEST_METHOD'];
         
         $vars = [];

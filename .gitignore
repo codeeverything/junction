@@ -1,5 +1,6 @@
 .c9
 .git
+.htaccess
 php.ini
 php_errors.log
 test-junction.php
