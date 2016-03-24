@@ -39,9 +39,10 @@ class Router {
         
         foreach ($this->__routes[$method] as $route) {
             $matched = 0;
+            
             foreach ($route['path'] as $index => $part) {
                 // handle a path segment
-                if ($part['type'] === 'segment' && $path[$index] == $part['value']) {
+                if ($part['type'] === 'segment' && isset($path[$index]) && $path[$index] == $part['value']) {
                     $matched++;
                     continue;
                 }
