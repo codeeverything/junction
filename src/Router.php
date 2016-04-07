@@ -52,9 +52,9 @@ class Router {
                     // validate the variable
                     $valid = true;
                     
-                    foreach ($part['validation'] as $validator) {
-                        if (is_callable($validator[0])) {
-                            $valid = $valid && call_user_func_array($validator[0], [$path[$index]]);
+                    foreach ($route['validation'][$part['varName']] as $validator) {
+                        if (is_callable($validator)) {
+                            $valid = $valid && call_user_func_array($validator, [$path[$index]]);
                         }
                     }
                     
@@ -125,7 +125,7 @@ class Router {
         $path = $path[1];
         
         $path = $this->__getPath($path);
-        
+    
         foreach ($path as &$part) {
             if (strpos($part, ':') === 0) {
                 // variable
@@ -165,5 +165,30 @@ class Router {
                 'payload' => $payload,
             ];
         }
+        
+        $this->currentPath = [
+            'method' => $method,
+            'path' => $path,
+        ];
+        
+        
+        return $this;
+    }
+    
+    /**
+     * When matching a route validate the path variable $varName by passing it to
+     * $callable. If callable returns truthy the valid, else invalid
+     * 
+     * @param string $varName - The name of the variable in the route
+     * @param callable $callable - The validation function
+     * @return object
+     */
+    public function validate($varName, $callable) {
+        echo "added validation for $varName, for route $this->currentPath";
+        $route = array_pop($this->__routes[$this->currentPath['method']]);
+        $route['validation'][$varName][] = $callable;
+        $this->__routes[$this->currentPath['method']][] = $route;
+        
+        return $this;
     }
 }
