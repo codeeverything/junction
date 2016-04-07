@@ -63,6 +63,7 @@ class Router {
                         $matched++;
                         continue;
                     } else {
+                        // TODO: Just because this route didn't match doesn't mean another wont, so don't really want this to be an exception?
                         throw new Exception("Route variable {$part['varName']} with value {$path[$index]} could not be validated.");
                     }
                 }
@@ -108,16 +109,7 @@ class Router {
      * @throws Exception
      * @return mixed
      */
-    public function add($path, $validation, $payload = null) {
-        if (is_callable($validation)) {
-            $payload = $validation;
-            $validation = [];
-        }
-        
-        if(!is_array($validation)) {
-            throw new Exception('Router::add validation must be an array');
-        }
-        
+    public function add($path, $payload = null) {
         $path = trim($path, '/');
         $path = explode(' ', $path);
         $method = $path[0];
@@ -184,7 +176,6 @@ class Router {
      * @return object
      */
     public function validate($varName, $callable) {
-        echo "added validation for $varName, for route $this->currentPath";
         $route = array_pop($this->__routes[$this->currentPath['method']]);
         $route['validation'][$varName][] = $callable;
         $this->__routes[$this->currentPath['method']][] = $route;
