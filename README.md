@@ -80,7 +80,7 @@ If the "name" is given then we can use it, but if it's omitted the route will st
 
 You can validate the path variables in your route by chaining validation callbacks after you've added your route.
 
-The return value of your validation callback will be evaluated as ``truthy``` or ```falsy```, I'd recommend returning a ```bool``` if you can.
+The return value of your validation callback will be evaluated as ```truthy``` or ```falsy```, I'd recommend returning a ```bool``` if you can.
 
 ##### Validation on a single route
 
