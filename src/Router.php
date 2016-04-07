@@ -62,10 +62,7 @@ class Router {
                         $vars[$part['varName']] = isset($path[$index]) ? $path[$index] : null;
                         $matched++;
                         continue;
-                    } else {
-                        // TODO: Just because this route didn't match doesn't mean another wont, so don't really want this to be an exception?
-                        throw new Exception("Route variable {$part['varName']} with value {$path[$index]} could not be validated.");
-                    }
+                    } 
                 }
             }
             
