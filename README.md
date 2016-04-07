@@ -78,19 +78,56 @@ If the "name" is given then we can use it, but if it's omitted the route will st
 
 ### Variable validation
 
-You can validate the path variables in your route by providing a list of validation callbacks
+You can validate the path variables in your route by chaining validation callbacks after you've added your route.
+
+The return value of your validation callback will be evaluated as ``truthy``` or ```falsy```, I'd recommend returning a ```bool``` if you can.
+
+##### Validation on a single route
+
+Let's look at an example of adding some validation:
 
 ```php
-$this->router->add('GET /hello/:name', [
-    'name' => [
-        function ($value) {
-            // only accept short names
-            return strlen($value) < 5;
-        },
-    ],
-], function ($name) {
+$this->router->add('GET /hello/:name/:age?', function ($name) {
     return 'Hello, ' . $name;
+})->validate('name', function ($name) {
+    // only allow strings and shorter names
+    return (is_string($name) && strlen($name) < 10);
+})->validate('age', function ($age) {
+    // only allow ints between 1 and 99
+    return (is_int($age) && ($age > 0 && $age < 100));
 });
 ```
+
+##### Validation using shared validation functions
+
+Need to use the same validation for multiple variables? No problem, right now you can simply define a validation function then reference it in your validation callback, for example:
+
+```php
+function nameValidator($name) {
+    // only allow strings and shorter names
+    return (is_string($name) && strlen($name) < 10);
+}
+
+$this->router->add('GET /hello/:name', function ($name) {
+    return 'Hello, ' . $name;
+})->validate('name', nameValidator);
+```
+
+If you're worried about polluting the global scope with such functions you can wrap your route definitions within ```call_user_func()``` to create an immediately executing function. Taking the example above we get this:
+
+```php
+call_user_func(function () {
+    function nameValidator($name) {
+        // only allow strings and shorter names
+        return (is_string($name) && strlen($name) < 10);
+    }
+    
+    $this->router->add('GET /hello/:name', function ($name) {
+        return 'Hello, ' . $name;
+    })->validate('name', nameValidator);
+});
+```
+
+##### Validation errors
 
 Validation errors will raise an ```Exception``` detailing the variable that failed validation and the invalid value.
