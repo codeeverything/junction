@@ -131,3 +131,8 @@ call_user_func(function () {
 ##### Validation errors
 
 Validation errors will raise an ```Exception``` detailing the variable that failed validation and the invalid value.
+
+## TODO
+
+- [ ] Add named routes "$METHOD $ROUTE_DEF AS $NAME"
+- [ ] Allow retreival of named routes, and addition of validation after retrieval
