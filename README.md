@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/codeeverything/junction.svg?branch=master)](https://travis-ci.org/codeeverything/junction)
+
 # Junction
 ### A simple PHP router
 
