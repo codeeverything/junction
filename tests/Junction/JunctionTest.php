@@ -24,7 +24,7 @@ class JunctionTest extends \PHPUnit_Framework_TestCase {
             return 'Hello, world';
         });
         
-        $_SERVER['PATH_INFO'] = '/hello';
+        $_SERVER['REQUEST_URI'] = '/hello';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $response = $this->router->handleRequest();
         $this->assertEquals($response, 'Hello, world');
@@ -36,14 +36,14 @@ class JunctionTest extends \PHPUnit_Framework_TestCase {
         });
         
         // test with name param var passed
-        $_SERVER['PATH_INFO'] = '/hello/Joe';
+        $_SERVER['REQUEST_URI'] = '/hello/Joe';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $response = $this->router->handleRequest();
         $this->assertEquals($response, 'Hello, Joe');
         
         // test without name param var passed
         $this->setExpectedException('Exception');
-        $_SERVER['PATH_INFO'] = '/hello';
+        $_SERVER['REQUEST_URI'] = '/hello';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $response = $this->router->handleRequest();
     }
@@ -55,38 +55,34 @@ class JunctionTest extends \PHPUnit_Framework_TestCase {
         });
         
         // test with name param var passed
-        $_SERVER['PATH_INFO'] = '/hello/Joe';
+        $_SERVER['REQUEST_URI'] = '/hello/Joe';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $response = $this->router->handleRequest();
         $this->assertEquals($response, 'Hello, Joe');
         
         // test without name param var passed
-        $_SERVER['PATH_INFO'] = '/hello';
+        $_SERVER['REQUEST_URI'] = '/hello';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $response = $this->router->handleRequest();
         $this->assertEquals($response, 'Hello, world');
     }
     
     public function testSimpleRouteWithValidatedParam() {
-        $this->router->add('GET /hello/:name', [
-            'name' => [
-                function ($value) {
-                    return strlen($value) < 5;
-                },
-            ],
-        ], function ($name) {
+        $this->router->add('GET /hello/:name', function ($name) {
             return 'Hello, ' . $name;
+        })->validate('name', function ($value) {
+            return strlen($value) < 5;
         });
         
         // test with short name param var passed
-        $_SERVER['PATH_INFO'] = '/hello/Joe';
+        $_SERVER['REQUEST_URI'] = '/hello/Joe';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $response = $this->router->handleRequest();
         $this->assertEquals($response, 'Hello, Joe');
         
         // test with longer name param var passed
         $this->setExpectedException('Exception');
-        $_SERVER['PATH_INFO'] = '/hello/Alexander';
+        $_SERVER['REQUEST_URI'] = '/hello/Alexander';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $response = $this->router->handleRequest();
     }

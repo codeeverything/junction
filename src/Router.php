@@ -54,9 +54,11 @@ class Router {
                     // validate the variable
                     $valid = true;
                     
-                    foreach ($route['validation'][$part['varName']] as $validator) {
-                        if (is_callable($validator)) {
-                            $valid = $valid && call_user_func_array($validator, [$path[$index]]);
+                    if (isset($route['validation'])) {
+                        foreach ($route['validation'][$part['varName']] as $validator) {
+                            if (is_callable($validator)) {
+                                $valid = $valid && call_user_func_array($validator, [$path[$index]]);
+                            }
                         }
                     }
                     
