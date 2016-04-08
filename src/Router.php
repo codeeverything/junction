@@ -37,20 +37,24 @@ class Router {
         $path = $this->__getPath($_SERVER['REQUEST_URI']);
         $method = $_SERVER['REQUEST_METHOD'];
         
-        $vars = [];
-        
         foreach ($this->__routes[$method] as $route) {
+            $vars = [];
             $matched = 0;
             
             foreach ($route['path'] as $index => $part) {
                 // handle a path segment
                 if ($part['type'] === 'segment' && isset($path[$index]) && $path[$index] == $part['value']) {
-                    $matched++;
-                    continue;
-                }
+                    if ($path[$index] == $part['value']) {
+                        $matched++;
+                        continue;
+                    } else {
+                        break;
+                    }
+                } 
                 
                 // handle a path variable
                 if ($part['type'] === 'var' && (isset($path[$index]) || $part['optional'] == true)) {
+                    echo "$path[$index] = {$part['varName']}";
                     // validate the variable
                     $valid = true;
                     
@@ -116,6 +120,7 @@ class Router {
         $method = $path[0];
         $name = isset($path[3]) ? $path[3] : null;
         $path = $path[1];
+        $path = $this->__groupRoute . $path;
         
         $path = $this->__getPath($path);
     
@@ -163,7 +168,6 @@ class Router {
             'path' => $path,
         ];
         
-        
         return $this;
     }
     
@@ -184,6 +188,7 @@ class Router {
     }
     
     public function group($groupRoute, $callback) {
+        $groupRoute = trim($groupRoute, '/');
         $restoreGroupRoute = $this->__groupRoute;
         
         $this->__groupRoute = $groupRoute;
