@@ -43,7 +43,7 @@ class Router {
             
             foreach ($route['path'] as $index => $part) {
                 // handle a path segment
-                if ($part['type'] === 'segment' && isset($path[$index]) && $path[$index] == $part['value']) {
+                if ($part['type'] === 'segment' && isset($path[$index])) {
                     if ($path[$index] == $part['value']) {
                         $matched++;
                         continue;
@@ -54,7 +54,6 @@ class Router {
                 
                 // handle a path variable
                 if ($part['type'] === 'var' && (isset($path[$index]) || $part['optional'] == true)) {
-                    echo "$path[$index] = {$part['varName']}";
                     // validate the variable
                     $valid = true;
                     
