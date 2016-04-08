@@ -75,6 +75,9 @@ class Router {
             }
             
             // did we match all the elements?
+            // TODO: Work on this. Currently this will match /hello/:name with /hello/mike, but also /hello/mike/timms
+            // these should really be considered different routes, unless the route was /hello/:name/*
+            // so $matched == count() is OK, IFF the final route part is '*' OR $matched also == count($path)?
             if ($matched == count($route['path'])) {
                 // execute the payload, passing in the $vars array as arguments
                 if ($executePayload) {
