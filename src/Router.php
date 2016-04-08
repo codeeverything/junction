@@ -22,6 +22,8 @@ class Router {
      */ 
     private $__routes = [];
     
+    private $__groupRoute = '';
+    
     /**
      * Handle the request made to the "front controller".
      * Take apart the path requested and try to find a matching
@@ -127,7 +129,6 @@ class Router {
                     'varName' => $varName,
                     'value' => $part,
                     'optional' => $optional,
-                    'validation' => $validation,
                 ];
             } else {
                 $part = [
@@ -178,5 +179,14 @@ class Router {
         $this->__routes[$this->currentPath['method']][] = $route;
         
         return $this;
+    }
+    
+    public function group($groupRoute, $callback) {
+        $restoreGroupRoute = $this->__groupRoute;
+        
+        $this->__groupRoute = $groupRoute;
+        call_user_func($callback, $this);
+        
+        $this->__groupRoute = $restoreGroupRoute;
     }
 }
